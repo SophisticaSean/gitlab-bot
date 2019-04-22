@@ -1,65 +1,65 @@
 package model
 
 import (
-  "time"
-  "strings"
+	"strings"
+	"time"
 )
 
 type Jobs []Job
 
-func (jobs Jobs) Combine(newJobs Jobs) (Jobs) {
-  for _, job := range newJobs {
-    job_id_in_list := false
-    for _, upper_job := range jobs {
-      if upper_job.ID == job.ID {
-        job_id_in_list = true
-      }
-    }
-    if !job_id_in_list {
-      jobs = append(jobs, job)
-    }
-  }
-  return jobs
+func (jobs Jobs) Combine(newJobs Jobs) Jobs {
+	for _, job := range newJobs {
+		job_id_in_list := false
+		for _, upper_job := range jobs {
+			if upper_job.ID == job.ID {
+				job_id_in_list = true
+			}
+		}
+		if !job_id_in_list {
+			jobs = append(jobs, job)
+		}
+	}
+	return jobs
 }
 
-func (jobs Jobs) FilterByOwnerName(name string) (Jobs){
-  outjobs := Jobs{}
-  for _, job := range jobs {
-    if strings.Contains(job.User.Name, name) {
-      outjobs = append(outjobs, job)
-    }
-  }
-  return outjobs
+func (jobs Jobs) FilterByOwnerName(name string) Jobs {
+	outjobs := Jobs{}
+	for _, job := range jobs {
+		if strings.Contains(job.User.Name, name) {
+			outjobs = append(outjobs, job)
+		}
+	}
+	return outjobs
 }
 
-func (jobs Jobs) FilterByJobName(name string) (Jobs){
-  outjobs := Jobs{}
-  for _, job := range jobs {
-    if strings.Contains(job.Name, name) {
-      outjobs = append(outjobs, job)
-    }
-  }
-  return outjobs
+func (jobs Jobs) FilterByJobName(name string) Jobs {
+	outjobs := Jobs{}
+	for _, job := range jobs {
+		if strings.Contains(job.Name, name) {
+			outjobs = append(outjobs, job)
+		}
+	}
+	return outjobs
 }
 
-func (jobs Jobs) FilterByStatus(name string) (Jobs){
-  outjobs := Jobs{}
-  for _, job := range jobs {
-    if strings.Contains(job.Status, name) {
-      outjobs = append(outjobs, job)
-    }
-  }
-  return outjobs
+func (jobs Jobs) FilterByStatus(name string) Jobs {
+	outjobs := Jobs{}
+	for _, job := range jobs {
+		if strings.Contains(job.Status, name) {
+			outjobs = append(outjobs, job)
+		}
+	}
+	return outjobs
 }
 
-func (jobs Jobs) FilterOutStatus(name string) (Jobs){
-  outjobs := Jobs{}
-  for _, job := range jobs {
-    if !strings.Contains(job.Status, name) {
-      outjobs = append(outjobs, job)
-    }
-  }
-  return outjobs
+func (jobs Jobs) FilterOutStatus(name string) Jobs {
+	outjobs := Jobs{}
+	for _, job := range jobs {
+		if !strings.Contains(job.Status, name) {
+			outjobs = append(outjobs, job)
+		}
+	}
+	return outjobs
 }
 
 type Job struct {
@@ -72,14 +72,14 @@ type Job struct {
 		ShortID     string    `json:"short_id"`
 		Title       string    `json:"title"`
 	} `json:"commit"`
-	Coverage          float64 `json:"coverage"`
-	CreatedAt         time.Time   `json:"created_at"`
-	StartedAt         time.Time   `json:"started_at"`
-	FinishedAt        time.Time   `json:"finished_at"`
-	Duration          float64     `json:"duration"`
-	ArtifactsExpireAt time.Time   `json:"artifacts_expire_at"`
-	ID                int         `json:"id"`
-	Name              string      `json:"name"`
+	Coverage          float64   `json:"coverage"`
+	CreatedAt         time.Time `json:"created_at"`
+	StartedAt         time.Time `json:"started_at"`
+	FinishedAt        time.Time `json:"finished_at"`
+	Duration          float64   `json:"duration"`
+	ArtifactsExpireAt time.Time `json:"artifacts_expire_at"`
+	ID                int       `json:"id"`
+	Name              string    `json:"name"`
 	Pipeline          struct {
 		ID     int    `json:"id"`
 		Ref    string `json:"ref"`

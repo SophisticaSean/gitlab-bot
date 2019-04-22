@@ -2,8 +2,22 @@ package model
 
 import (
 	"strings"
+	"sync"
 	"time"
 )
+
+type JobSlice struct {
+	Slice Jobs
+	mux   sync.Mutex
+}
+
+func (js *JobSlice) Lock() {
+	js.mux.Lock()
+}
+
+func (js *JobSlice) Unlock() {
+	js.mux.Unlock()
+}
 
 type Jobs []Job
 

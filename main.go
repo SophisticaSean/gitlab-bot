@@ -9,7 +9,7 @@ import (
 )
 
 var app_id = "21"
-var job_count = 500
+var job_count = 30
 
 func main() {
 
@@ -98,12 +98,21 @@ func main() {
 		}
 	}
 
+	// compute and print our average coverage
+	total_coverage := 0.0
+	for _, job := range jobs {
+		total_coverage = total_coverage + job.Coverage
+		fmt.Printf("ID: %d Cov: %f\n", job.ID, job.Coverage)
+	}
+	avg_coverage := total_coverage / (float64(len(jobs) - len(canceled)))
+	fmt.Printf("Average Coverage: %f\n", avg_coverage)
+
 	// compute and print the average amount of time our builds take to finish
 	total_duration := 0.0
 	for _, job := range jobs {
 		total_duration = total_duration + job.Duration
 	}
-	avg_duration := total_duration / (float64(len(jobs)))
+	avg_duration := total_duration / (float64(len(jobs) - len(canceled)))
 	fmt.Printf("Average duration seconds: %f\n", avg_duration)
 	fmt.Printf("Average duration minutes: %f\n", avg_duration/float64(60))
 

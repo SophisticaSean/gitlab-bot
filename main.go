@@ -3,26 +3,35 @@ package main
 import (
 	"fmt"
 	"time"
+  "flag"
 
 	"github.com/SophisticaSean/gitlab-bot/gitlab"
 	"github.com/SophisticaSean/gitlab-bot/model"
 )
 
-var app_id = "21"
-var job_count = 30
+var job_count int
+var app_id string
+var job_name string
+var owner_name string
 
 func main() {
 
 	gl := gitlab.New()
 
+  flag.IntVar(&job_count, "job_count", 100, "The amount of parallel and duplicate jobs we should spin up.")
+  flag.StringVar(&app_id, "app_id", "21", "The app id of the gitlab project, determines which pipelines we look at.")
+  flag.StringVar(&job_name, "job_name", "Unit Tests + Coverage", "The full name of the job we should duplicate and monitor.")
+  flag.StringVar(&owner_name, "owner_name", "Sean", "The first name of the user triggering the job.")
+  flag.Parse()
+
 	var jobs model.Jobs
 
-	// wait for a new Unit Tests job
+	// wait for a new job
 	for {
-		fmt.Println("waiting for a running/pending new Unit Tests job")
+		fmt.Printf("waiting for a running/pending new %s job for owner %s for app_id %s, will spin up %d jobs\n", job_name, owner_name, app_id, job_count)
 		jobs = gl.GetJobsPageCount(app_id, 5)
-		jobs = jobs.FilterByOwnerName("Sean")
-		jobs = jobs.FilterByJobName("Unit Tests + Coverage")
+		jobs = jobs.FilterByOwnerName(owner_name)
+		jobs = jobs.FilterByJobName(job_name)
 		pending_jobs := jobs.FilterByStatus("pending")
 		running_jobs := jobs.FilterByStatus("running")
 		jobs = pending_jobs.Combine(running_jobs)
@@ -35,12 +44,12 @@ func main() {
 	// cancel all running jobs
 	gl.CancelJobs(app_id, jobs)
 
-	// wait for a new canceled Unit Tests job
+	// wait for a new canceled job
 	for {
-		fmt.Println("waiting for a new canceled Unit Tests job")
+		fmt.Println("waiting for a new canceled %s job\n", job_name)
 		jobs = gl.GetJobsPageCount(app_id, 5)
-		jobs = jobs.FilterByOwnerName("Sean")
-		jobs = jobs.FilterByJobName("Unit Tests + Coverage")
+		jobs = jobs.FilterByOwnerName(owner_name)
+		jobs = jobs.FilterByJobName(job_name)
 		jobs = jobs.FilterByStatus("canceled")
 		if len(jobs) > 0 {
 			break

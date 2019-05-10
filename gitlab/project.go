@@ -6,7 +6,7 @@ import (
 	"github.com/SophisticaSean/gitlab-bot/model"
 )
 
-func (gitlab Gitlab) searchProjects(name string) (projects []model.Project) {
+func (gitlab Gitlab) SearchProjects(name string) (projects []model.Project) {
 	path := fmt.Sprintf("projects?search=%s", name)
 	body := gitlab.Get(path)
 
